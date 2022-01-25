@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>添加模板 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="title: 添加模板date: 2022-01-25 06:12:56tags:  下面讲解如何设置一个exp模板首先，把自己需要的模板内容写好，如： 12345678910111213141516171819202122232425# coding&#x3D;utf-8from pwn import *from LibcSearcher import *context(log_level &#x3D;&amp;#x27">
+<meta property="og:type" content="article">
+<meta property="og:title" content="添加模板">
+<meta property="og:url" content="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="title: 添加模板date: 2022-01-25 06:12:56tags:  下面讲解如何设置一个exp模板首先，把自己需要的模板内容写好，如： 12345678910111213141516171819202122232425# coding&#x3D;utf-8from pwn import *from LibcSearcher import *context(log_level &#x3D;&amp;#x27">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/1.png">
+<meta property="og:image" content="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/2.png">
+<meta property="og:image" content="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/3.png">
+<meta property="og:image" content="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/4.png">
+<meta property="article:published_time" content="2022-01-25T14:25:31.000Z">
+<meta property="article:modified_time" content="2022-01-25T14:26:39.594Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-添加模板" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" class="article-date">
+  <time class="dt-published" datetime="2022-01-25T14:25:31.000Z" itemprop="datePublished">2022-01-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      添加模板
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>title: 添加模板<br>date: 2022-01-25 06:12:56<br>tags:</p>
+<hr>
+<h4 id="下面讲解如何设置一个exp模板"><a href="#下面讲解如何设置一个exp模板" class="headerlink" title="下面讲解如何设置一个exp模板"></a>下面讲解如何设置一个exp模板</h4><p>首先，把自己需要的模板内容写好，如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(log_level =<span class="string">&#x27;debug&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>,os =<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"><span class="comment"># p = process(&#x27;./gyctf_2020_document&#x27;)</span></span><br><span class="line"><span class="comment"># libc =  ELF(&#x27;/lib/x86_64-linux-gnu/libc-2.23.so&#x27;)</span></span><br><span class="line">libc =  ELF(<span class="string">&#x27;./libc-2.23_x64.so&#x27;</span>)</span><br><span class="line">p = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26987</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">debug</span>():</span></span><br><span class="line">    <span class="comment"># raw_input()</span></span><br><span class="line">    gdb.attach(p)</span><br><span class="line"></span><br><span class="line">sla = <span class="keyword">lambda</span> re,se:p.sendlineafter(re,se)</span><br><span class="line">sa  = <span class="keyword">lambda</span> re,se:p.sendafter(re,se)</span><br><span class="line">ru  = <span class="keyword">lambda</span> re   :p.recvuntil(re)</span><br><span class="line">u64 = <span class="keyword">lambda</span>      :p.recvuntil(<span class="string">&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">u32 = <span class="keyword">lambda</span>      :p.recvuntil()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">debug()</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>然后找到sublime左上方的tools选项，选择 Developer 里面的 New Snippet ，双击打开</p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/1.png"></p>
+<p>接着，修改下面红色方框框住的部分，把它改为之前写好的模板，如下：</p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/2.png"></p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/3.png"></p>
+<p>再给你的模板改一个自己记得名字并保存，这样就大功告成了</p>
+<p>最后打开你的sublime，使用 ctrl + shift + p，输入你刚刚给模板取的名字，敲敲回车，看看效果</p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/4.png"></p>
+<p>这样以后就再也不用敲这些繁琐的代码了！！！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" data-id="ckyu85adv0002umjx64rj22rn" data-title="添加模板" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          栈迁移
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">hexo+github博客搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/">栈迁移</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/">添加模板</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">hexo+github博客搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

