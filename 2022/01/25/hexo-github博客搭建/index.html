@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>hexo+github博客搭建 | gadpleas</title><meta name="keywords" content="hexo,github"><meta name="author" content="gadpleas"><meta name="copyright" content="gadpleas"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1.安装nodejs安装Hexo前需要安装Node.js（版本自己确定） 对于Ubuntu系列系统，执行以下两个命令： $ curl -sL https:&#x2F;&#x2F;deb.nodesource.com&#x2F;setup_16.x | sudo -E bash -$ sudo apt install -y nodejs  如果系统中没有安装curl，执行下述命令安装： $ sudo apt install cu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo+github博客搭建">
+<meta property="og:url" content="http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:site_name" content="gadpleas">
+<meta property="og:description" content="1.安装nodejs安装Hexo前需要安装Node.js（版本自己确定） 对于Ubuntu系列系统，执行以下两个命令： $ curl -sL https:&#x2F;&#x2F;deb.nodesource.com&#x2F;setup_16.x | sudo -E bash -$ sudo apt install -y nodejs  如果系统中没有安装curl，执行下述命令安装： $ sudo apt install cu">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/38.jpg">
+<meta property="article:published_time" content="2022-01-24T22:07:40.000Z">
+<meta property="article:modified_time" content="2022-03-16T04:44:30.260Z">
+<meta property="article:author" content="gadpleas">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="github">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/38.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'hexo+github博客搭建',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-03-16 12:44:30'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.1.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/%E5%8D%A1%E9%80%9A%E7%8B%97%E7%8B%97%E5%9B%BE%E7%89%87%20(3).jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/1011.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">gadpleas</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">hexo+github博客搭建</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-01-24T22:07:40.000Z" title="发表于 2022-01-25 06:07:40">2022-01-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-03-16T04:44:30.260Z" title="更新于 2022-03-16 12:44:30">2022-03-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="hexo+github博客搭建"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="1-安装nodejs"><a href="#1-安装nodejs" class="headerlink" title="1.安装nodejs"></a>1.安装nodejs</h2><p>安装Hexo前需要安装Node.js（版本自己确定）</p>
+<p>对于Ubuntu系列系统，执行以下两个命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -</span><br><span class="line">$ sudo apt install -y nodejs</span><br></pre></td></tr></table></figure>
+
+<p>如果系统中没有安装<code>curl</code>，执行下述命令安装：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt install curl</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后需要检查下<code>node</code>和<code>npm</code>的版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ node -v</span><br><span class="line">$ npm -v</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-Hexo本地建站"><a href="#2-Hexo本地建站" class="headerlink" title="2.Hexo本地建站"></a>2.Hexo本地建站</h2><h3 id="2-1-安装hexo"><a href="#2-1-安装hexo" class="headerlink" title="2.1.安装hexo"></a>2.1.安装hexo</h3><p><code>Hexo</code>安装非常简单，上述环境搭建好后只需执行以下命令即可：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-Hexo本地建站"><a href="#2-2-Hexo本地建站" class="headerlink" title="2.2.Hexo本地建站"></a>2.2.Hexo本地建站</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">创建目录</span><br><span class="line">$ <span class="built_in">mkdir</span> hexo</span><br><span class="line">切换目录</span><br><span class="line">$ <span class="built_in">cd</span> hexo</span><br><span class="line">初始化 Hexo</span><br><span class="line">$ hexo init</span><br></pre></td></tr></table></figure>
+
+<p>下述命令会在该文件夹下建立所有需要的文件。接下来安装依赖包：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>hexo generate</code> 是用来编译生成站点，每次对站点内容编辑后都要进行该项操作。可以简化为 <code>hexo g</code>。</li>
+<li><code>hexo server</code>是用来启动本地站点，执行后即可在浏览器中输入<code>localhost:4000</code>查看。可以简化为  <code>hexo s</code>。</li>
+</ul>
+<h2 id="3-Ubuntu-16-04下Github配置"><a href="#3-Ubuntu-16-04下Github配置" class="headerlink" title="3.Ubuntu 16.04下Github配置"></a>3.Ubuntu 16.04下Github配置</h2><h3 id="3-1-Git安装"><a href="#3-1-Git安装" class="headerlink" title="3.1.Git安装"></a>3.1.Git安装</h3><p>Ubuntu下需要安装git，输入命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo apt-get install git</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-SSH配置"><a href="#3-2-SSH配置" class="headerlink" title="3.2.SSH配置"></a>3.2.SSH配置</h3><p>我们需要使用ssh来和github上的远程仓库进行通信，所以需要检查和配置ssh。</p>
+<p>首先需要检查电脑上现有的ssh key:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> ~/.ssh</span><br></pre></td></tr></table></figure>
+
+
+<p>如果提示：<code>No such file or dictionary</code> 则说明你是第一次使用git。</p>
+<p>如果你是第一次使用git，那么你需要做如下工作。否则可以跳过此节。</p>
+<p>生成新的SSH KEY:</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C <span class="string">&quot;youraddress@youremail.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>youraddress@youremail.com</code>是你Github的注册邮箱</p>
+<h3 id="3-3-打开存放密钥的文件夹查看"><a href="#3-3-打开存放密钥的文件夹查看" class="headerlink" title="3.3.打开存放密钥的文件夹查看"></a>3.3.打开存放密钥的文件夹查看</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> .ssh/          <span class="comment">#打开存放密钥的文件夹</span></span><br><span class="line"><span class="built_in">ls</span>                <span class="comment">#查看文件</span></span><br><span class="line"><span class="built_in">cat</span> id_rsa        <span class="comment">#查看私钥</span></span><br><span class="line"><span class="built_in">cat</span> id_rsa.pub    <span class="comment">#查看公钥</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>.ssh/</code>中可以看到<code>cat id_rsa</code>  <code>cat id_rsa.pub</code>两个文件</p>
+<p><code>cat id_rsa</code>为私钥，一般自己保存即可</p>
+<p><code>cat id_rsa.pub</code>为公钥，添加到服务器上</p>
+<p>复制一下生成的公钥，从（包括）ssh-rsa到最后。最后的计算机名和它前面的空格不用复制，复制也可以。</p>
+<p>登录Github，点右上角自己的头像，选择Settings，然后在新页面中的左侧边栏选择SSH and GPG Key。给这个ssh公钥起一个名字，然后把公钥复制进去。</p>
+<p>添加上之后就可以用本机SSH连接Github了。</p>
+<h3 id="3-4-通过SSH命令连接Github连接检查"><a href="#3-4-通过SSH命令连接Github连接检查" class="headerlink" title="3.4.通过SSH命令连接Github连接检查"></a>3.4.通过SSH命令连接Github连接检查</h3><p>当一切配置妥当后，在终端中输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+
+<p>如果你是第一次输入此命令，可能遇到如下提示：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">The authenticity of host <span class="string">&#x27;github.com (207.97.227.239)&#x27;</span> can<span class="string">&#x27;t be established.</span></span><br><span class="line"><span class="string">RSA key fingerprint is xx:xx...xx:xx.</span></span><br><span class="line"><span class="string">Are you sure you want to continue connecting (yes/no)?</span></span><br></pre></td></tr></table></figure>
+
+
+<p>此时输入yes即可，然后会出现：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Hi xxx! You<span class="string">&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span></span><br></pre></td></tr></table></figure>
+
+
+<p>此时表明你的github配置完成了</p>
+<h3 id="3-5-本地个人信息配置"><a href="#3-5-本地个人信息配置" class="headerlink" title="3.5.本地个人信息配置"></a>3.5.本地个人信息配置</h3><p>此时你已经可以通过SSH连接到Github了，但是还有一些个人信息需要完善才能够和Github愉快的通信。</p>
+<p>Git会依据本地设定的用户名和邮箱向远程主机提交更改，Github也是依据这些信息进行权限管理的。如果你当前只使用一个Github帐号，那么你需要以下两个命令来完善本地个人信息设定：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git config --global user.name <span class="string">&quot;your github name&quot;</span></span><br><span class="line">$ git config --global user.email <span class="string">&quot;youraddress@youremail.com&quot;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>上述命令中your github name是你的github用户名，<a href="mailto:&#x79;&#111;&#117;&#x72;&#x61;&#x64;&#x64;&#114;&#x65;&#x73;&#x73;&#x40;&#x79;&#x6f;&#x75;&#x72;&#101;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#109;">&#x79;&#111;&#117;&#x72;&#x61;&#x64;&#x64;&#114;&#x65;&#x73;&#x73;&#x40;&#x79;&#x6f;&#x75;&#x72;&#101;&#x6d;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#109;</a>是你github的注册邮箱。</p>
+<h2 id="4-Github-io部署博客"><a href="#4-Github-io部署博客" class="headerlink" title="4.Github.io部署博客"></a>4.Github.io部署博客</h2><h3 id="4-1-config-yml参数设置"><a href="#4-1-config-yml参数设置" class="headerlink" title="4.1_config.yml参数设置"></a>4.1_config.yml参数设置</h3><p>部署配置在_config.yml文件的末尾，默认样子如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line"> <span class="built_in">type</span>:</span><br><span class="line"> repo:</span><br></pre></td></tr></table></figure>
+
+
+<p>修改后如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Deployment</span></span><br><span class="line"><span class="comment">## Docs: https://hexo.io/docs/deployment.html</span></span><br><span class="line">deploy:</span><br><span class="line"> <span class="built_in">type</span>: git</span><br><span class="line"> repo: http://github.com/xxx/xxx.github.io.git(xxx是Github账户名称)</span><br><span class="line"> branch: master</span><br></pre></td></tr></table></figure>
+
+<p>这里一定要保证空格对齐!!</p>
+<p>3.2插件安装</p>
+<p>为了部署到Github上，需要安装hexo-deployer-git插件，命令如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>最终部署需要输入以下两个命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">gadpleas</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">http://example.com/2022/01/25/hexo-github%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">gadpleas</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/hexo/">hexo</a><a class="post-meta__tags" href="/tags/github/">github</a></div><div class="post_share"><div class="social-share" data-image="/img/38.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2022/01/25/%E6%B7%BB%E5%8A%A0%E6%A8%A1%E6%9D%BF/"><img class="prev-cover" src="/img/48.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">添加模板</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/%E5%8D%A1%E9%80%9A%E7%8B%97%E7%8B%97%E5%9B%BE%E7%89%87%20(3).jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">gadpleas</div><div class="author-info__description">gadpleas的博客</div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/gadpleas/gadpleas.github.io"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">welcome to my blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%89%E8%A3%85nodejs"><span class="toc-number">1.</span> <span class="toc-text">1.安装nodejs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Hexo%E6%9C%AC%E5%9C%B0%E5%BB%BA%E7%AB%99"><span class="toc-number">2.</span> <span class="toc-text">2.Hexo本地建站</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AE%89%E8%A3%85hexo"><span class="toc-number">2.1.</span> <span class="toc-text">2.1.安装hexo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-Hexo%E6%9C%AC%E5%9C%B0%E5%BB%BA%E7%AB%99"><span class="toc-number">2.2.</span> <span class="toc-text">2.2.Hexo本地建站</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Ubuntu-16-04%E4%B8%8BGithub%E9%85%8D%E7%BD%AE"><span class="toc-number">3.</span> <span class="toc-text">3.Ubuntu 16.04下Github配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Git%E5%AE%89%E8%A3%85"><span class="toc-number">3.1.</span> <span class="toc-text">3.1.Git安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-SSH%E9%85%8D%E7%BD%AE"><span class="toc-number">3.2.</span> <span class="toc-text">3.2.SSH配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%89%93%E5%BC%80%E5%AD%98%E6%94%BE%E5%AF%86%E9%92%A5%E7%9A%84%E6%96%87%E4%BB%B6%E5%A4%B9%E6%9F%A5%E7%9C%8B"><span class="toc-number">3.3.</span> <span class="toc-text">3.3.打开存放密钥的文件夹查看</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E9%80%9A%E8%BF%87SSH%E5%91%BD%E4%BB%A4%E8%BF%9E%E6%8E%A5Github%E8%BF%9E%E6%8E%A5%E6%A3%80%E6%9F%A5"><span class="toc-number">3.4.</span> <span class="toc-text">3.4.通过SSH命令连接Github连接检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%9C%AC%E5%9C%B0%E4%B8%AA%E4%BA%BA%E4%BF%A1%E6%81%AF%E9%85%8D%E7%BD%AE"><span class="toc-number">3.5.</span> <span class="toc-text">3.5.本地个人信息配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Github-io%E9%83%A8%E7%BD%B2%E5%8D%9A%E5%AE%A2"><span class="toc-number">4.</span> <span class="toc-text">4.Github.io部署博客</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-config-yml%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE"><span class="toc-number">4.1.</span> <span class="toc-text">4.1_config.yml参数设置</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/04/01/%E6%A0%88%E6%BA%A2%E5%87%BA%E6%80%BB%E7%BB%93/" title="无题"><img src="/img/17.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/01/%E6%A0%88%E6%BA%A2%E5%87%BA%E6%80%BB%E7%BB%93/" title="无题">无题</a><time datetime="2022-04-01T11:21:19.491Z" title="发表于 2022-04-01 19:21:19">2022-04-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/05/hitcon2014-stkof/" title="hitcon2014_stkof"><img src="/img/33.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hitcon2014_stkof"/></a><div class="content"><a class="title" href="/2022/03/05/hitcon2014-stkof/" title="hitcon2014_stkof">hitcon2014_stkof</a><time datetime="2022-03-05T12:24:58.000Z" title="发表于 2022-03-05 20:24:58">2022-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/02/jarvisoj-typo/" title="jarvisoj_typo"><img src="/img/26.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="jarvisoj_typo"/></a><div class="content"><a class="title" href="/2022/03/02/jarvisoj-typo/" title="jarvisoj_typo">jarvisoj_typo</a><time datetime="2022-03-02T12:03:13.000Z" title="发表于 2022-03-02 20:03:13">2022-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/28/SWPUCTF-2019-login/" title="SWPUCTF_2019_login"><img src="/img/22.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SWPUCTF_2019_login"/></a><div class="content"><a class="title" href="/2022/02/28/SWPUCTF-2019-login/" title="SWPUCTF_2019_login">SWPUCTF_2019_login</a><time datetime="2022-02-28T05:15:21.000Z" title="发表于 2022-02-28 13:15:21">2022-02-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/02/21/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019Not-Bad/" title="极客大挑战 2019Not Bad"><img src="/img/31.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="极客大挑战 2019Not Bad"/></a><div class="content"><a class="title" href="/2022/02/21/%E6%9E%81%E5%AE%A2%E5%A4%A7%E6%8C%91%E6%88%98-2019Not-Bad/" title="极客大挑战 2019Not Bad">极客大挑战 2019Not Bad</a><time datetime="2022-02-21T06:20:00.000Z" title="发表于 2022-02-21 14:20:00">2022-02-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2022 By gadpleas</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a target="_blank" rel="noopener" href="https://gadpleas.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
